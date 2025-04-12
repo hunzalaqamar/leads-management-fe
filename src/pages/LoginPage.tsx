@@ -3,13 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import LoginForm from "../components/LoginForm";
 import ErrorBoundary from "../components/ErrorBoundary";
 import { useAuth } from "../context/AuthContext";
+import { login } from "../service/api";
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login: setAuthLogin } = useAuth();
   const [formErrors, setFormErrors] = useState<{ general?: string }>({});
 
-  const handleLogin = (e: FormEvent) => {
+  const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
     const email = form.email.value;
@@ -20,13 +21,17 @@ const LoginPage: React.FC = () => {
       return;
     }
 
-    login();
-    navigate("/home");
+    const result = await login(email, password);
+    if (result.success) {
+      setAuthLogin();
+      navigate("/home");
+    } else {
+      setFormErrors({ general: result.message });
+    }
   };
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
-      {/* Form Section */}
       <div className="flex-1 flex items-center justify-center bg-white p-6 lg:p-12">
         <div className="w-full max-w-md">
           <ErrorBoundary>
