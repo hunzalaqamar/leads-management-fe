@@ -16,7 +16,6 @@ export const LeadsProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [leads, setLeads] = useState<Lead[]>([]);
 
-  // Delete leads
   const deleteLeads = async (leadIds: string[]) => {
     const result = await deleteLeadsApi(leadIds);
     if (result?.success) {

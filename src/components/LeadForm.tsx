@@ -61,7 +61,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ onLeadSubmit }) => {
       phone: formData.phone || undefined,
       companyName: formData.companyName || undefined,
       notes: formData.notes || undefined,
-      created_at: new Date().toISOString(),
+      createdAt: new Date().toISOString(),
     };
 
     onLeadSubmit(lead);

@@ -77,7 +77,6 @@ export const getLeads = async () => {
   }
 };
 
-// API call to delete leads
 export const deleteLeads = async (leadIds: string[]) => {
   try {
     const token = getToken();

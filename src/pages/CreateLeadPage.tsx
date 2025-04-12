@@ -28,7 +28,6 @@ const CreateLeadPage: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
-      {/* Form Section */}
       <div className="flex-1 flex items-center justify-center bg-white p-6 lg:p-12">
         <div className="w-full max-w-md">
           <ErrorBoundary>

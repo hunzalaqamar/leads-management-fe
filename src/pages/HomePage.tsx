@@ -6,7 +6,6 @@ import { Lead } from "../types/interfaces";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-// Custom hook for debouncing
 const useDebounce = (value: string, delay: number) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
@@ -31,7 +30,6 @@ const HomePage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredLeads, setFilteredLeads] = useState<Lead[]>(leads);
 
-  // Fetch leads on mount
   useEffect(() => {
     const fetchLeads = async () => {
       const result = await getLeads();
