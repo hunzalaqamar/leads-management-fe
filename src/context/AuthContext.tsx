@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  useState,
-  useContext,
-  ReactNode,
-  useEffect,
-} from "react";
+import React, { createContext, useState, useContext, ReactNode } from "react";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -17,20 +11,17 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  useEffect(() => {
-    const token = localStorage.getItem("jwtToken");
-    if (token) {
-      setIsAuthenticated(true);
-    }
-  }, []);
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return !!localStorage.getItem("jwtToken");
+  });
 
   const login = () => setIsAuthenticated(true);
+
   const logout = () => {
     localStorage.removeItem("jwtToken");
     setIsAuthenticated(false);
   };
+
   return (
     <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
       {children}

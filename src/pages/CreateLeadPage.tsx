@@ -20,7 +20,7 @@ const CreateLeadPage: React.FC = () => {
     });
 
     if (result.success) {
-      toast.success("Lead created successfully!");
+      toast.success(result.message);
     } else {
       toast.error(result.message);
     }

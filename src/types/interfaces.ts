@@ -5,5 +5,5 @@ export interface Lead {
   phone?: string;
   companyName?: string;
   notes?: string;
-  created_at?: string;
+  createdAt?: string;
 }

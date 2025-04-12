@@ -49,3 +49,59 @@ export const createLead = async (leadData: Lead) => {
     };
   }
 };
+
+export const getLeads = async () => {
+  try {
+    const token = getToken();
+    if (!token) {
+      return;
+    }
+
+    const response = await apiClient.get("/api/leads", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = response.data;
+    if (data.status) {
+      return { success: true, message: data.message, leads: data.data };
+    } else {
+      return { success: false, message: data.message };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: "An error occurred while fetching leads",
+    };
+  }
+};
+
+// API call to delete leads
+export const deleteLeads = async (leadIds: string[]) => {
+  try {
+    const token = getToken();
+    if (!token) {
+      return;
+    }
+
+    const response = await apiClient.delete("/api/leads", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      data: leadIds,
+    });
+
+    const data = response.data;
+    if (data.status) {
+      return { success: true, message: data.message };
+    } else {
+      return { success: false, message: data.message };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: "An error occurred while deleting leads",
+    };
+  }
+};

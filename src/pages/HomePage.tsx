@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useLeads } from "../context/LeadsContext";
+import { getLeads } from "../service/api";
 import { Lead } from "../types/interfaces";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // Custom hook for debouncing
 const useDebounce = (value: string, delay: number) => {
@@ -22,11 +25,25 @@ const useDebounce = (value: string, delay: number) => {
 
 const HomePage: React.FC = () => {
   const { logout } = useAuth();
-  const { leads, deleteLeads } = useLeads();
+  const { leads, setLeads, deleteLeads } = useLeads();
   const [selectedLeads, setSelectedLeads] = useState<string[]>([]);
   const [selectAll, setSelectAll] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredLeads, setFilteredLeads] = useState<Lead[]>(leads);
+
+  // Fetch leads on mount
+  useEffect(() => {
+    const fetchLeads = async () => {
+      const result = await getLeads();
+      if (result?.success) {
+        setLeads(result.leads);
+      } else {
+        toast.error(result?.message);
+      }
+    };
+
+    fetchLeads();
+  }, [setLeads]);
 
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
@@ -81,7 +98,13 @@ const HomePage: React.FC = () => {
   };
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
+    const formattedDateString = dateString.endsWith("Z")
+      ? dateString
+      : `${dateString}Z`;
+    const date = new Date(formattedDateString);
+    if (isNaN(date.getTime())) {
+      return "Invalid Date";
+    }
     return date.toLocaleDateString("en-US", {
       day: "numeric",
       month: "short",
@@ -189,7 +212,9 @@ const HomePage: React.FC = () => {
                         <td className="p-3">{lead.fullName}</td>
                         <td className="p-3">{lead.companyName || "-"}</td>
                         <td className="p-3">{lead.notes || "-"}</td>
-                        <td className="p-3">{formatDate(lead.created_at)}</td>
+                        <td className="p-3">
+                          {formatDate(lead.createdAt || "")}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -209,6 +234,7 @@ const HomePage: React.FC = () => {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };
