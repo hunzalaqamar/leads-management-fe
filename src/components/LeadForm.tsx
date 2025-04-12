@@ -1,6 +1,5 @@
 import React, { useState, FormEvent, ChangeEvent } from "react";
 import FormInput from "./FormInput";
-import axios from "axios";
 import { Lead } from "../types/interfaces";
 
 interface FormData {
@@ -48,7 +47,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ onLeadSubmit }) => {
     return errors;
   };
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     const errors = validateForm();
     if (Object.keys(errors).length > 0) {
@@ -56,33 +55,35 @@ const LeadForm: React.FC<LeadFormProps> = ({ onLeadSubmit }) => {
       return;
     }
 
-    try {
-      const response = await axios.post("http://localhost:8080/leads", {
-        ...formData,
-        created_at: new Date().toISOString(),
-      });
-      onLeadSubmit(response.data);
-      setFormData({
-        fullName: "",
-        email: "",
-        phone: "",
-        companyName: "",
-        notes: "",
-      });
-      setFormErrors({});
-    } catch (error) {
-      setFormErrors({
-        ...formErrors,
-        general: "Failed to submit lead. Please try again.",
-      });
-    }
+    const lead: Lead = {
+      fullName: formData.fullName,
+      email: formData.email,
+      phone: formData.phone || undefined,
+      companyName: formData.companyName || undefined,
+      notes: formData.notes || undefined,
+      created_at: new Date().toISOString(),
+    };
+
+    onLeadSubmit(lead);
+
+    setFormData({
+      fullName: "",
+      email: "",
+      phone: "",
+      companyName: "",
+      notes: "",
+    });
+    setFormErrors({});
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <h2 className="text-2xl font-bold text-gray-800">
+      <h2 className="text-3xl font-bold text-gray-800">
         Let's get you started
       </h2>
+      <h3 className="text-sm font-bold text-gray-500 mb-10">
+        Fill the form below to submit a Lead
+      </h3>
       <FormInput
         label="Full name"
         type="text"
@@ -138,7 +139,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ onLeadSubmit }) => {
         type="submit"
         className="w-full bg-teal-800 text-white py-3 rounded-md hover:bg-teal-900 transition"
       >
-        Sign Up
+        Submit
       </button>
     </form>
   );

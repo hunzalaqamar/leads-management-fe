@@ -1,6 +1,6 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import SignupPage from "./pages/SignupPage";
+import CreateLeadPage from "./pages/CreateLeadPage";
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
 import { useAuth } from "./context/AuthContext";
@@ -10,7 +10,7 @@ const App: React.FC = () => {
 
   return (
     <Routes>
-      <Route path="/signup" element={<SignupPage />} />
+      <Route path="/signup" element={<CreateLeadPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route
         path="/home"

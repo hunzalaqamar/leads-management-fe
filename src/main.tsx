@@ -5,6 +5,7 @@ import { AuthProvider } from "./context/AuthContext";
 import "./index.css";
 import App from "./App";
 import { LeadsProvider } from "./context/LeadsContext";
+import { ToastContainer } from "react-toastify";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
@@ -12,6 +13,16 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
       <AuthProvider>
         <LeadsProvider>
           <App />
+          <ToastContainer
+            position="top-right"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop
+            closeOnClick
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
         </LeadsProvider>
       </AuthProvider>{" "}
     </BrowserRouter>

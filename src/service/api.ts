@@ -1,5 +1,6 @@
 import axios from "axios";
 import { API_BASE_URL } from "../types/constants";
+import { Lead } from "../types/interfaces";
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -28,5 +29,23 @@ export const login = async (email: string, password: string) => {
     }
   } catch (error) {
     return { success: false, message: "An error occurred while logging in" };
+  }
+};
+
+export const createLead = async (leadData: Lead) => {
+  try {
+    const response = await apiClient.post("/api/leads", leadData);
+
+    const data = response.data;
+    if (data.status) {
+      return { success: true, message: data.message, lead: data.data };
+    } else {
+      return { success: false, message: data.message };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: "An error occurred while creating the lead",
+    };
   }
 };

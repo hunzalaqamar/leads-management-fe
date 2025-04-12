@@ -4,6 +4,7 @@ import LoginForm from "../components/LoginForm";
 import ErrorBoundary from "../components/ErrorBoundary";
 import { useAuth } from "../context/AuthContext";
 import { login } from "../service/api";
+import { toast } from "react-toastify";
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -25,8 +26,9 @@ const LoginPage: React.FC = () => {
     if (result.success) {
       setAuthLogin();
       navigate("/home");
+      toast.success("Login Successful");
     } else {
-      setFormErrors({ general: result.message });
+      toast.error(result.message);
     }
   };
 

@@ -1,23 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import LeadForm from "../components/LeadForm";
 import ErrorBoundary from "../components/ErrorBoundary";
+import { createLead } from "../service/api";
+import { Lead } from "../types/interfaces";
+import { toast } from "react-toastify";
 
-interface Lead {
-  id?: string;
-  fullName: string;
-  email: string;
-  phone?: string;
-  companyName?: string;
-  notes?: string;
-  created_at: string;
-}
-
-const SignupPage: React.FC = () => {
+const CreateLeadPage: React.FC = () => {
   const navigate = useNavigate();
+  const [formErrors, setFormErrors] = useState<{ general?: string }>({});
 
-  const handleLeadSubmit = (lead: Lead) => {
-    navigate("/home");
+  const handleLeadSubmit = async (lead: Lead) => {
+    const result = await createLead({
+      fullName: lead.fullName,
+      email: lead.email,
+      phone: lead.phone,
+      companyName: lead.companyName,
+      notes: lead.notes,
+    });
+
+    if (result.success) {
+      toast.success("Lead created successfully!");
+    } else {
+      toast.error(result.message);
+    }
   };
 
   return (
@@ -28,10 +34,15 @@ const SignupPage: React.FC = () => {
           <ErrorBoundary>
             <LeadForm onLeadSubmit={handleLeadSubmit} />
           </ErrorBoundary>
+          {formErrors.general && (
+            <p className="text-red-500 text-sm mt-2 text-center">
+              {formErrors.general}
+            </p>
+          )}
           <p className="mt-4 text-sm text-gray-600 text-center">
-            Already a user?{" "}
-            <Link to="/login" className="text-teal-600 hover:underline">
-              Login
+            Go to Admin Login
+            <Link to="/login" className="text-teal-600 hover:underline ml-1">
+              Click here
             </Link>
           </p>
         </div>
@@ -48,4 +59,4 @@ const SignupPage: React.FC = () => {
   );
 };
 
-export default SignupPage;
+export default CreateLeadPage;
