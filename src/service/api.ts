@@ -27,8 +27,8 @@ export const login = async (email: string, password: string) => {
     } else {
       return { success: false, message: data.message };
     }
-  } catch (error) {
-    return { success: false, message: "An error occurred while logging in" };
+  } catch (error: any) {
+    return { success: false, message: error?.response?.data?.message };
   }
 };
 
@@ -42,11 +42,8 @@ export const createLead = async (leadData: Lead) => {
     } else {
       return { success: false, message: data.message };
     }
-  } catch (error) {
-    return {
-      success: false,
-      message: "An error occurred while creating the lead",
-    };
+  } catch (error: any) {
+    return { success: false, message: error?.response?.data?.message };
   }
 };
 
@@ -69,11 +66,8 @@ export const getLeads = async () => {
     } else {
       return { success: false, message: data.message };
     }
-  } catch (error) {
-    return {
-      success: false,
-      message: "An error occurred while fetching leads",
-    };
+  } catch (error: any) {
+    return { success: false, message: error?.response?.data?.message };
   }
 };
 
@@ -97,10 +91,7 @@ export const deleteLeads = async (leadIds: string[]) => {
     } else {
       return { success: false, message: data.message };
     }
-  } catch (error) {
-    return {
-      success: false,
-      message: "An error occurred while deleting leads",
-    };
+  } catch (error: any) {
+    return { success: false, message: error?.response?.data?.message };
   }
 };

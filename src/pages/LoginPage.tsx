@@ -4,7 +4,7 @@ import LoginForm from "../components/LoginForm";
 import ErrorBoundary from "../components/ErrorBoundary";
 import { useAuth } from "../context/AuthContext";
 import { login } from "../service/api";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -60,6 +60,7 @@ const LoginPage: React.FC = () => {
           <p className="text-lg">— Albert Einstein</p>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };
