@@ -188,6 +188,7 @@ const HomePage: React.FC = () => {
                         />
                       </th>
                       <th className="p-3">Name</th>
+                      <th className="p-3">Email</th>
                       <th className="p-3">Company</th>
                       <th className="p-3">Notes</th>
                       <th className="p-3">Date</th>
@@ -208,6 +209,7 @@ const HomePage: React.FC = () => {
                           />
                         </td>
                         <td className="p-3">{lead.fullName}</td>
+                        <td className="p-3">{lead.email}</td>
                         <td className="p-3">{lead.companyName || "-"}</td>
                         <td className="p-3">{lead.notes || "-"}</td>
                         <td className="p-3">
