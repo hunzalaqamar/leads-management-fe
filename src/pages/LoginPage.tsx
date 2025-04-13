@@ -5,13 +5,21 @@ import ErrorBoundary from "../components/ErrorBoundary";
 import { useAuth } from "../context/AuthContext";
 import { login } from "../service/api";
 import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import LoadingOverlay from "../components/LoadingOverlay";
+
+interface LoginResponse {
+  success: boolean;
+  message: string;
+}
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const { login: setAuthLogin } = useAuth();
   const [formErrors, setFormErrors] = useState<{ general?: string }>({});
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const handleLogin = async (e: FormEvent) => {
+  const handleLogin = async (e: FormEvent): Promise<void> => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
     const email = form.email.value;
@@ -22,7 +30,10 @@ const LoginPage: React.FC = () => {
       return;
     }
 
-    const result = await login(email, password);
+    setLoading(true);
+    const result: LoginResponse = await login(email, password);
+    setLoading(false);
+
     if (result.success) {
       setAuthLogin();
       navigate("/home");
@@ -34,6 +45,8 @@ const LoginPage: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
+      {loading && <LoadingOverlay message="Logging In..." />}
+
       <div className="flex-1 flex items-center justify-center bg-white p-6 lg:p-12">
         <div className="w-full max-w-md">
           <ErrorBoundary>

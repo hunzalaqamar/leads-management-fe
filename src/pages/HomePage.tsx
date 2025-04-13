@@ -5,9 +5,16 @@ import { getLeads } from "../service/api";
 import { Lead } from "../types/interfaces";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import LoadingOverlay from "../components/LoadingOverlay";
 
-const useDebounce = (value: string, delay: number) => {
-  const [debouncedValue, setDebouncedValue] = useState(value);
+interface ApiResponse {
+  success: boolean;
+  message: string;
+  leads: Lead[];
+}
+
+const useDebounce = (value: string, delay: number): string => {
+  const [debouncedValue, setDebouncedValue] = useState<string>(value);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -26,13 +33,16 @@ const HomePage: React.FC = () => {
   const { logout } = useAuth();
   const { leads, setLeads, deleteLeads } = useLeads();
   const [selectedLeads, setSelectedLeads] = useState<string[]>([]);
-  const [selectAll, setSelectAll] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [selectAll, setSelectAll] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const [filteredLeads, setFilteredLeads] = useState<Lead[]>(leads);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchLeads = async () => {
+      setLoading(true);
       const result = await getLeads();
+      setLoading(false);
       if (result?.success) {
         setLeads(result.leads);
       } else {
@@ -67,7 +77,7 @@ const HomePage: React.FC = () => {
     }
   }, [leads, searchQuery]);
 
-  const handleSelectAll = () => {
+  const handleSelectAll = (): void => {
     if (selectAll) {
       setSelectedLeads([]);
       setSelectAll(false);
@@ -78,7 +88,7 @@ const HomePage: React.FC = () => {
     }
   };
 
-  const handleCheckboxChange = (leadId: string) => {
+  const handleCheckboxChange = (leadId: string): void => {
     setSelectedLeads((prev) => {
       const newSelected = prev.includes(leadId)
         ? prev.filter((id) => id !== leadId)
@@ -89,13 +99,15 @@ const HomePage: React.FC = () => {
     });
   };
 
-  const handleDelete = () => {
-    deleteLeads(selectedLeads);
+  const handleDelete = async (): Promise<void> => {
+    setLoading(true);
+    await deleteLeads(selectedLeads);
+    setLoading(false);
     setSelectedLeads([]);
     setSelectAll(false);
   };
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: string): string => {
     const formattedDateString = dateString.endsWith("Z")
       ? dateString
       : `${dateString}Z`;
@@ -112,6 +124,9 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="min-h-screen flex bg-gradient-to-br from-[#FFF5E1] to-[#E1DFFF]">
+      {/* Loading Overlay */}
+      {loading && <LoadingOverlay message="Processing..." />}
+
       <div className="w-16 bg-white border-r border-gray-200 flex flex-col items-center py-6">
         <div className="mb-8">
           <div className="w-8 h-8 bg-gray-800 rounded"></div>

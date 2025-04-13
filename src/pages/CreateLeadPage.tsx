@@ -4,20 +4,31 @@ import LeadForm from "../components/LeadForm";
 import ErrorBoundary from "../components/ErrorBoundary";
 import { createLead } from "../service/api";
 import { Lead } from "../types/interfaces";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import LoadingOverlay from "../components/LoadingOverlay";
+
+interface CreateLeadResponse {
+  success: boolean;
+  message: string;
+  data?: Lead;
+}
 
 const CreateLeadPage: React.FC = () => {
   const navigate = useNavigate();
   const [formErrors, setFormErrors] = useState<{ general?: string }>({});
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const handleLeadSubmit = async (lead: Lead) => {
-    const result = await createLead({
+  const handleLeadSubmit = async (lead: Lead): Promise<void> => {
+    setLoading(true);
+    const result: CreateLeadResponse = await createLead({
       fullName: lead.fullName,
       email: lead.email,
       phone: lead.phone,
       companyName: lead.companyName,
       notes: lead.notes,
     });
+    setLoading(false);
 
     if (result.success) {
       toast.success(result.message);
@@ -28,6 +39,8 @@ const CreateLeadPage: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
+      {loading && <LoadingOverlay message="Creating Lead..." />}
+
       <div className="flex-1 flex items-center justify-center bg-white p-6 lg:p-12">
         <div className="w-full max-w-md">
           <ErrorBoundary>
@@ -54,6 +67,7 @@ const CreateLeadPage: React.FC = () => {
           <p className="text-lg">— Albert Einstein</p>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };
